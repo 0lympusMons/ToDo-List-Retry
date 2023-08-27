@@ -1,11 +1,50 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <script defer src="./main.js"></script>
     <title>To Do</title>
 </head>
+
 <body>
-    
+    <header>
+        <h1 class="text">Todo</h1>
+    </header>
+
+    <div class="global_wrapper">
+        <div class="menu">
+            <ul>
+                <li><button id="inboxButton" class="menu__button">Inbox</button></li>
+                <li><button id="todayButton" class="menu__button">Today</button></li>
+                <li><button id="thisWeekButton" class="menu__button">This Week</button></li>
+            </ul>
+
+            <div class="projects">
+                <h2>Projects</h2>
+                <ul>
+                    <li><button class="project__button">Project 1</button></li>
+                </ul>
+
+                <button id="addProjectButton">Add Project</button>
+            </div>
+        </div>
+
+        <div class="temporary__content">
+            <div class="temporary__content--content">
+                <h1 id="content__title"></h1>
+
+
+                <!-- make a modal/form -->
+
+            </div>
+        </div>
+    </div>
+
+
+
 </body>
+
 </html>
