@@ -1,3 +1,5 @@
+import Storage from "./Storage";
+
 //menu
 
 export default class UI {
@@ -80,7 +82,7 @@ export default class UI {
         //i display tanan tasks sa storage
 
         //createFormNode
-        UI.addNode(".temporary__content--content", UI.createFormNode('lol'));
+        UI.addNode(".temporary__content--content", UI.createFormNode("inbox"));
     }
 
     static loadTodayPage() {
@@ -127,10 +129,13 @@ export default class UI {
             //  >fetch form data
             let formData = UI.fetchFormData(e);
 
-            //  >append new  task to UI
-
+            
             //  >push new task to storage
-
+            // storage example: "inbox"
+            Storage.addTask(storage, formData);
+            
+            //  >refresh task list
+            // issue: mobalik sa inbox page
 
             //or event emitter
             //emit nalang diri, tas pass data 
