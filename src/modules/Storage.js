@@ -1,9 +1,8 @@
 export default class Storage{
-    static inboxStorage = [];
-    
-    static saveInbox(){
 
-    }
+    // each index contains object: {title, date, priority}
+    static inboxStorage = [];
+    static todayStorage = [];
 
     static addTask(to, newTask){
         if(to == "inbox"){
@@ -11,5 +10,7 @@ export default class Storage{
             console.table(Storage.inboxStorage);
         }
     }
+
+    todayStorage = inboxStorage.filter((task) => task.date );
     
 }
