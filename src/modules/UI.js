@@ -144,17 +144,42 @@ export default class UI {
         //get from storage
         //i display tanan tasks sa storage
     
-        (Storage.inboxStorage).forEach(task => {
+        (Storage.todayStorage).forEach(task => {
             //add task to UI
             UI.addTask(task);
         });
 
         //createFormNode
-        UI.addNode(".temporary__content--content", UI.createFormNode("inbox"));
+        // UI.addNode(".temporary__content--content", UI.createFormNode("inbox"));
 
     }
 
     static loadThisWeekPage() {
+
+        //set active page to inbox
+        UI.activePage = "Today";
+
+        //first, clear page
+        UI.clearPage();
+
+        //display title: Inbox
+        let temporaryContent = document.querySelector(".temporary__content--content");
+        temporaryContent.innerHTML += `
+        <h1 id="content__title">Today</h1>
+        <div class="tasks--wrapper"></div>
+        `;
+
+
+        //get from storage
+        //i display tanan tasks sa storage
+    
+        (Storage.thisWeekStorage).forEach(task => {
+            //add task to UI
+            UI.addTask(task);
+        });
+
+        //createFormNode
+        // UI.addNode(".temporary__content--content", UI.createFormNode("inbox"));
 
     }
 
