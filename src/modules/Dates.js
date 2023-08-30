@@ -16,7 +16,7 @@ export default class Dates {
     ////CONVERTER
 
     //convert string date to int
-    //example
+    //example: "2022-02-01" to {year: 2022, month: 01, day: 01}
     static convertDate(stringDate) {
 
         let dateArr = stringDate.split('-');
