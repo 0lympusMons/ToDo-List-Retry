@@ -157,7 +157,7 @@ export default class UI {
     static loadThisWeekPage() {
 
         //set active page to inbox
-        UI.activePage = "Today";
+        UI.activePage = "This Week";
 
         //first, clear page
         UI.clearPage();
