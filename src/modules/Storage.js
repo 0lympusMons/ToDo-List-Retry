@@ -34,7 +34,7 @@ export default class Storage {
             return Dates.isThisWeek(new Date(date.year, date.month, date.day));
         });
         console.log("___________________________");
-        console.table(Storage.todayStorage);
+        console.table(Storage.thisWeekStorage);
     }
 
 
