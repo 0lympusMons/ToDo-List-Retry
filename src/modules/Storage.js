@@ -5,6 +5,7 @@ export default class Storage {
     // each index contains object: {title, date, priority}
     static inboxStorage = [];
     static todayStorage = [];
+    static thisWeekStorage = [];
 
     static addTask(to, newTask) {
         if (to == "inbox") {
@@ -24,6 +25,16 @@ export default class Storage {
         });
         console.log("___________________________");
         console.table(Storage.todayStorage);
+
+
+        //saves to thisWeekStorage
+        Storage.thisWeekStorage = Storage.inboxStorage.filter((task) => {
+            let date = Dates.convertDate(task.date);
+            
+            return Dates.isThisWeek(new Date(date.year, date.month, date.day));
+        });
+        console.log("___________________________");
+        console.table(Storage.thisWeekStorage);
     }
 
 

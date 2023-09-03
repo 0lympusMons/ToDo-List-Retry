@@ -9,12 +9,12 @@ export default class UI {
     static initProjectButtons() {
         let inboxButton = document.querySelector("#inboxButton");
         let todayButton = document.querySelector("#todayButton");
-        let thisWeekButton = document.querySelector("#thisWeekButton");
+        let thisWeekButton = document.querySelector("#thisWeekButton"); 
 
         //LOAD PAGE IF BUTTON CLICKED
-        inboxButton.onclick = UI.loadInboxPage;
-        todayButton.onclick = UI.loadTodayPage;
-        thisWeekButton.onclick = UI.loadThisWeekPage;
+        inboxButton.onclick = ()=>{UI.loadPage("Inbox")};
+        todayButton.onclick = ()=>{UI.loadPage("Today")};
+        thisWeekButton.onclick = ()=>{UI.loadPage("This Week")};
 
     }
 
@@ -62,7 +62,6 @@ export default class UI {
     ////FETHCERS
 
     //use for adding task in UI, and in Storage
-    //Request: emit signal when new fethFormData request is sent, it means new task has been submitted
     static fetchFormData(e) {
 
         let title = e.target.taskTitle.value;
@@ -87,55 +86,55 @@ export default class UI {
     static activePage;
 
     static refreshPage() {
-        if (UI.activePage == "inbox") {
-            UI.loadInboxPage();
-        }
+        UI.loadPage(UI.activePage);
     }
 
     //loads user-preferred homepage
+    //WIP
     static loadHomePage() {
-        UI.loadInboxPage();
+        UI.loadPage("Inbox");
     }
 
-    static loadInboxPage() {
+    static loadPage(pageTitle) {
 
-        //set active page to inbox
-        UI.activePage = "inbox";
-
-        //first, clear page
+        // Set active page
+        UI.activePage = pageTitle;
+    
+        // Clear page
         UI.clearPage();
-
-        //display title: Inbox
+    
+        // Display title
         let temporaryContent = document.querySelector(".temporary__content--content");
         temporaryContent.innerHTML += `
-        <h1 id="content__title">Inbox</h1>
+        <h1 id="content__title">${pageTitle}</h1>
         <div class="tasks--wrapper"></div>
         `;
-
-
-        //get from storage
-        //i display tanan tasks sa storage
-
-        (Storage.inboxStorage).forEach(task => {
-            //add task to UI
-            UI.addTask(task);
-        });
-
-        //createFormNode
-        UI.addNode(".temporary__content--content", UI.createFormNode("inbox"));
+    
+        // Get tasks from storage and display
+        //make this simpler
+        if(UI.activePage == "Inbox"){
+            (Storage.inboxStorage).forEach(task => {
+                //add task to UI
+                UI.addTask(task);
+            });
+        }else if(UI.activePage == "Today"){
+            (Storage.todayStorage).forEach(task => {
+                //add task to UI
+                UI.addTask(task);
+            });
+        }else if(UI.activePage == "This Week"){
+            (Storage.thisWeekStorage).forEach(task => {
+                //add task to UI
+                UI.addTask(task);
+            });
+        }
+    
+        // Create form node if inbox
+        if(UI.activePage == "Inbox") UI.addNode(".temporary__content--content", UI.createFormNode("inbox"));
     }
 
-    static loadTodayPage() {
 
-    }
-
-    static loadThisWeekPage() {
-
-    }
-
-
-
-
+    
     ////CREATING NODES
     // needs addNode()
 
