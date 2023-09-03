@@ -7,10 +7,13 @@ export default class Storage {
     static todayStorage = [];
     static thisWeekStorage = [];
 
+    // each index contains a Project object: {name, key, tasks}
+    //tasks is an array that contains object: {title, date, priority}
+    static projectsStorage = [];
+
     static addTask(to, newTask) {
         if (to == "inbox") {
             Storage.inboxStorage.push(newTask);
-            console.table(Storage.inboxStorage);
         }
 
         //Warning: function not following single-responsibility principle
@@ -20,21 +23,17 @@ export default class Storage {
         //If task date is today, then add it to todayStorage
         Storage.todayStorage = Storage.inboxStorage.filter((task) => {
             let date = Dates.convertDate(task.date);
-            
             return Dates.isToday(new Date(date.year, date.month, date.day));
         });
-        console.log("___________________________");
-        console.table(Storage.todayStorage);
+
 
 
         //saves to thisWeekStorage
         Storage.thisWeekStorage = Storage.inboxStorage.filter((task) => {
             let date = Dates.convertDate(task.date);
-            
             return Dates.isThisWeek(new Date(date.year, date.month, date.day));
         });
-        console.log("___________________________");
-        console.table(Storage.thisWeekStorage);
+
     }
 
 
