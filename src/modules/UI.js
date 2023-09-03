@@ -90,8 +90,9 @@ export default class UI {
     }
 
     //loads user-preferred homepage
+    //WIP
     static loadHomePage() {
-        UI.loadInboxPage();
+        UI.loadPage("Inbox");
     }
 
     static loadPage(pageTitle) {
