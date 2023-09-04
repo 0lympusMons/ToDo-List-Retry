@@ -36,5 +36,12 @@ export default class Storage {
 
     }
 
+    //gets project inside Storage.projectsStorage
+    //Parameter: key
+    //example: getProject(1), gets project with key 1
+    static getProject(key){
+        return Storage.projectsStorage.find((project => project.key === key));
+    }
+
 
 }
