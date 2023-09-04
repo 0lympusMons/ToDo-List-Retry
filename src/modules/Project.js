@@ -4,17 +4,27 @@ export default class Project{
 
     tasks = [];
     
-    constructor(name, key){
-        this.name = name;
-        this.key = key;
+    constructor(title, key){
+        this._title = title;
+        this._key = key;
     }
 
-    get getName(){
-        return this.name;
+    get title(){
+        return this._title;
     }
 
-    get getKey(){
-        return this.key;
+    set title(title){
+        this._title = title;
+    }
+
+    get key(){
+        return this._key;
+    }
+
+    //💡idea: cache index
+    //if a project gets removed from storage, re-cache index
+    get storageIndex(){
+        return Storage.projectsStorage.findIndex(project => project.key === this.key);
     }
 
     get tasks(){
@@ -29,14 +39,14 @@ export default class Project{
     //delete project from storage
     delete(){
 
-        let index = Storage.projectsStorage.findIndex(project => project.key === this.getKey);
+        let index = Storage.projectsStorage.findIndex(project => project.key === this.key);
         Storage.projectsStorage.splice(index, 1);
         
     }
 
     
     addTask(task){
-        let index = Storage.projectsStorage.findIndex(project => project.key === this.getKey);
+        let index = Storage.projectsStorage.findIndex(project => project.key === this.key);
         Storage.projectsStorage[index].tasks.push(task);
     }
 
