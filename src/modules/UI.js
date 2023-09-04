@@ -9,12 +9,12 @@ export default class UI {
     static initProjectButtons() {
         let inboxButton = document.querySelector("#inboxButton");
         let todayButton = document.querySelector("#todayButton");
-        let thisWeekButton = document.querySelector("#thisWeekButton"); 
+        let thisWeekButton = document.querySelector("#thisWeekButton");
 
         //LOAD PAGE IF BUTTON CLICKED
-        inboxButton.onclick = ()=>{UI.loadPage("Inbox")};
-        todayButton.onclick = ()=>{UI.loadPage("Today")};
-        thisWeekButton.onclick = ()=>{UI.loadPage("This Week")};
+        inboxButton.onclick = () => { UI.loadPage("Inbox") };
+        todayButton.onclick = () => { UI.loadPage("Today") };
+        thisWeekButton.onclick = () => { UI.loadPage("This Week") };
 
     }
 
@@ -99,48 +99,79 @@ export default class UI {
 
         // Set active page
         UI.activePage = pageTitle;
-    
+
         // Clear page
         UI.clearPage();
-    
+
         // Display title
         let temporaryContent = document.querySelector(".temporary__content--content");
         temporaryContent.innerHTML += `
         <h1 id="content__title">${pageTitle}</h1>
         <div class="tasks--wrapper"></div>
         `;
-    
+
         // Get tasks from storage and display
-        //make this simpler
-        if(UI.activePage == "Inbox"){
+        //⛔make this simpler
+
+        if (UI.activePage == "Inbox") {
             (Storage.inboxStorage).forEach(task => {
                 //add task to UI
                 UI.addTask(task);
             });
-        }else if(UI.activePage == "Today"){
+        } else if (UI.activePage == "Today") {
             (Storage.todayStorage).forEach(task => {
                 //add task to UI
                 UI.addTask(task);
             });
-        }else if(UI.activePage == "This Week"){
+        } else if (UI.activePage == "This Week") {
             (Storage.thisWeekStorage).forEach(task => {
                 //add task to UI
                 UI.addTask(task);
             });
         }
-    
+
         // Create form node if inbox
-        if(UI.activePage == "Inbox") UI.addNode(".temporary__content--content", UI.createFormNode("inbox"));
+        if (UI.activePage == "Inbox") UI.addNode(".temporary__content--content", UI.createFormNode("inbox"));
     }
 
+    //⛔argument should be the project itself na, dili na unta ni mag find project in storage inside this function
+    static loadProject(key) {
 
-    
+        //find project in storage
+        //continue here👇
+        //get project from storage
+        let project = Storage.getProject(key);
+
+        // Set active page
+        // ⛔won't work
+        //😓consequences: adding task wont refresh page, etc
+        UI.activePage = "Project";
+
+        // Clear page
+        UI.clearPage();
+
+        // Display title
+        let temporaryContent = document.querySelector(".temporary__content--content");
+        temporaryContent.innerHTML += `
+         <h1 id="content__title">${project.name}</h1>
+         <div class="tasks--wrapper"></div>
+         `;
+
+
+        //display project tasks
+        (project.tasks).forEach(task => {
+            //add task to UI
+            UI.addTask(task);
+        });
+
+
+        // Create form node if inbox
+        //⛔ also create form node if project
+        if (UI.activePage == "Inbox" || UI.activePage == "Project") UI.addNode(".temporary__content--content", UI.createFormNode("inbox"));
+    };
+
     ////CREATING NODES
     // needs addNode()
-
-    static createTask() {
-
-    }
 
     static createFormNode(storage) {
         let form = document.createElement("form");
