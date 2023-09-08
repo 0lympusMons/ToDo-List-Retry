@@ -47,33 +47,6 @@ export default class Storage {
         return {title:"This Week",tasks:Storage.#thisWeekStorage, addTask};
     };
 
-
-    //example: 
-    //addTask("inbox", {title:"a", date:"2023-09-02", priority:"Important"});
-    static addTask(reference) {
-
-        reference.addTask(task);
-
-        //Warning: function not following single-responsibility principle
-        //because it performs filtering of today's tasks
-
-        // Date.isToday(2023, 07, 29) or Date.isToday(year, month, day)
-        //If task date is today, then add it to todayStorage
-        Storage.todayStorage = Storage.#inboxStorage.filter((task) => {
-            let date = Dates.convertDate(task.date);
-            return Dates.isToday(new Date(date.year, date.month, date.day));
-        });
-
-
-
-        //saves to thisWeekStorage
-        Storage.thisWeekStorage = Storage.#inboxStorage.filter((task) => {
-            let date = Dates.convertDate(task.date);
-            return Dates.isThisWeek(new Date(date.year, date.month, date.day));
-        });
-
-    }
-
     //gets project inside Storage.projectsStorage
     //Parameter: key
     //example: getProject(1), gets project with key 1
