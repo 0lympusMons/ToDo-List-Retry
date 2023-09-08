@@ -106,7 +106,7 @@ export default class UI {
         // Set active page
         // ⛔won't work
         //😓consequences: adding task wont refresh page, etc
-        UI.activePage = title;
+        UI.activePage = storage;
 
         // Clear page
         UI.clearPage();
@@ -114,7 +114,7 @@ export default class UI {
         // Display title
         let temporaryContent = document.querySelector(".temporary__content--content");
         temporaryContent.innerHTML += `
-         <h1 id="content__title">${UI.activePage}</h1>
+         <h1 id="content__title">${title}</h1>
          <div class="tasks--wrapper"></div>
          `;
 
@@ -130,48 +130,10 @@ export default class UI {
 
         // Create form node if inbox
         //⛔ also create form node if project
-        if (UI.activePage == "Inbox" || UI.activePage == "Project") UI.addNode(".temporary__content--content", UI.createFormNode(storage));
+        if (UI.activePage.title == Storage.inbox.title || UI.activePage == "Project") UI.addNode(".temporary__content--content", UI.createFormNode(storage));
         //🤨 how to reference the storage??
     }
 
-    // static loadPage(pageTitle) {
-
-    //     // Set active page
-    //     UI.activePage = pageTitle;
-
-    //     // Clear page
-    //     UI.clearPage();
-
-    //     // Display title
-    //     let temporaryContent = document.querySelector(".temporary__content--content");
-    //     temporaryContent.innerHTML += `
-    //     <h1 id="content__title">${pageTitle}</h1>
-    //     <div class="tasks--wrapper"></div>
-    //     `;
-
-    //     // Get tasks from storage and display
-    //     //⛔make this simpler
-
-    //     if (UI.activePage == "Inbox") {
-    //         (Storage.inboxStorage).forEach(task => {
-    //             //add task to UI
-    //             UI.addTask(task);
-    //         });
-    //     } else if (UI.activePage == "Today") {
-    //         (Storage.todayStorage).forEach(task => {
-    //             //add task to UI
-    //             UI.addTask(task);
-    //         });
-    //     } else if (UI.activePage == "This Week") {
-    //         (Storage.thisWeekStorage).forEach(task => {
-    //             //add task to UI
-    //             UI.addTask(task);
-    //         });
-    //     }
-
-    //     Create form node if inbox
-    //     if (UI.activePage == "Inbox") UI.addNode(".temporary__content--content", UI.createFormNode("inbox"));
-    // }
 
     //⛔argument should be the project itself na, dili na unta ni mag find project in storage inside this function
     static loadProject(key) {
@@ -183,7 +145,7 @@ export default class UI {
         // Set active page
         // ⛔won't work
         //😓consequences: adding task wont refresh page, etc
-        UI.activePage = "Project";
+        // !!!!UI.activePage = "Project";
 
         // Clear page
         UI.clearPage();
