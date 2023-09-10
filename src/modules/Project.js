@@ -21,10 +21,15 @@ export default class Project{
         return this._key;
     }
 
-    set key(_key){
-        // if key not taken, set key
-        // else generate another key
+    get type(){
+        return "Project";
     }
+
+    static #$key = 0;
+
+    static generateKey(){
+        return Project.#$key++;
+    };
 
     //💡idea: cache index
     //if a project gets removed from storage, re-cache index

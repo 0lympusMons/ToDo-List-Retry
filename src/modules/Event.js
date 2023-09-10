@@ -1,7 +1,7 @@
+import EventEmitter from 'events';
 
 export default class Events{
-    EventEmitter = require('events');
-    eventEmitter = new EventEmitter();
+    static eventEmitter = new EventEmitter();
 }
 
 
