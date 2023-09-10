@@ -12,45 +12,55 @@ export default class Storage {
     static projectsStorage = [];
 
     //⚠️code repeating
-    static get inbox(){
-        function addTask(task){
-            Storage.#inboxStorage.push(task);
-        }
-        return {title:"Inbox",tasks:Storage.#inboxStorage, addTask};
-    };
+    //continue here 👇
+    static addTaskToStorage(task, storage) {
+        storage.push(task);
+    }
 
-    static get todayTasks(){
-        function addTask(task){
-            Storage.#todayStorage.push(task);
-        }
+    static get inbox() {
+        return {
+            title: "Inbox",
+            tasks: Storage.#inboxStorage,
+            addTask: (task) => Storage.addTaskToStorage(task, Storage.#inboxStorage)
+        };
+    }
 
-        //adding tasks after button is clicked 
+    static get todayTasks() {
+        // Filter inbox tasks based on whether they are for today
         Storage.#todayStorage = Storage.#inboxStorage.filter((task) => {
-            let date = Dates.convertDate(task.date);
+            const date = Dates.convertDate(task.date);
             return Dates.isToday(new Date(date.year, date.month, date.day));
         });
 
-        return {title:"Today",tasks:Storage.#todayStorage, addTask};
-    };
+        return {
+            title: "Today",
+            tasks: Storage.#todayStorage,
+            addTask: (task) => Storage.addTaskToStorage(task, Storage.#todayStorage)
+        };
+    }
 
-    static get thisWeekTasks(){
-        function addTask(task){
-            Storage.#thisWeekStorage.push(task);
-        }
-
+    static get thisWeekTasks() {
+        // Filter inbox tasks based on whether they are for this week
         Storage.#thisWeekStorage = Storage.#inboxStorage.filter((task) => {
-            let date = Dates.convertDate(task.date);
+            const date = Dates.convertDate(task.date);
             return Dates.isThisWeek(new Date(date.year, date.month, date.day));
         });
 
+        return {
+            title: "This Week",
+            tasks: Storage.#thisWeekStorage,
+            addTask: (task) => Storage.addTaskToStorage(task, Storage.#thisWeekStorage)
+        };
+    }
 
-        return {title:"This Week",tasks:Storage.#thisWeekStorage, addTask};
-    };
+    static get projects() {
+        return Storage.projectsStorage;
+    }
 
     //gets project inside Storage.projectsStorage
     //Parameter: key
     //example: getProject(1), gets project with key 1
-    static getProject(key){
+    static getProject(key) {
         return Storage.projectsStorage.find((project => project.key === key));
     }
 

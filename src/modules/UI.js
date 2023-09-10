@@ -27,7 +27,7 @@ export default class UI {
 
     //addTask(fetchFormData())
     //addTask({title, date, priority})
-    static addTask({ title, date, priority }) {
+    static addTask({ title, date, priority }) { 
 
         //create task node
         let taskNode = document.createElement("div");
@@ -99,15 +99,17 @@ export default class UI {
 
     // loadPage(storageReference)
     //example: UI.loadPage(Storage.inbox)
+    //UI.loadPage({title, tasks})
     static loadPage(storage) {
 
-        //👇continue here   
         const {title, tasks} = storage;
         // Set active page
         // ⛔won't work
         //😓consequences: adding task wont refresh page, etc
         UI.activePage = storage;
 
+        console.log("Active page: "+ UI.activePage);
+        console.log("Active page type: "+UI.activePage.type);
         // Clear page
         UI.clearPage();
 
@@ -129,53 +131,15 @@ export default class UI {
 
 
         // Create form node if inbox
-        //⛔ also create form node if project
-        if (UI.activePage.title == Storage.inbox.title || UI.activePage == "Project") UI.addNode(".temporary__content--content", UI.createFormNode(storage));
-        //🤨 how to reference the storage??
+        if (UI.activePage.title == Storage.inbox.title || UI.activePage.type == "Project") UI.addNode(".temporary__content--content", UI.createFormNode(storage));
     }
 
-
-    //⛔argument should be the project itself na, dili na unta ni mag find project in storage inside this function
-    static loadProject(key) {
-
-        //find project in storage
-        //get project from storage
-        let project = Storage.getProject(key);
-
-        // Set active page
-        // ⛔won't work
-        //😓consequences: adding task wont refresh page, etc
-        // !!!!UI.activePage = "Project";
-
-        // Clear page
-        UI.clearPage();
-
-        // Display title
-        let temporaryContent = document.querySelector(".temporary__content--content");
-        temporaryContent.innerHTML += `
-         <h1 id="content__title">${project.title}</h1>
-         <div class="tasks--wrapper"></div>
-         `;
-
-
-        //display project tasks
-        (project.tasks).forEach(task => {
-            //add task to UI
-            UI.addTask(task);
-        });
-
-
-        // Create form node if inbox
-        //⛔ also create form node if project
-        if (UI.activePage == "Inbox" || UI.activePage == "Project") UI.addNode(".temporary__content--content", UI.createFormNode("inbox"));
-    };
 
     ////CREATING NODES
     // needs addNode()
 
     //createFormNode(storageReference)
     //example: createFormNode(Storage.inboxStorage)
-    //dapat class, dili variable para ma pass as reference
     static createFormNode(reference) {
         let form = document.createElement("form");
         form.setAttribute("id", "form");
@@ -209,13 +173,8 @@ export default class UI {
             // Storage.addTask(storage, formData);
 
             //  >refresh task list
-            // issue: mobalik sa inbox page
 
             UI.refreshPage();
-
-            //or event emitter
-            //emit nalang diri, tas pass data 
-            //eventlisteners will get that data
         });
 
         return form;
