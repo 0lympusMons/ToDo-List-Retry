@@ -1,6 +1,19 @@
 import Dates from "./Dates";
+import Events from "./Event";
+import Project from "./Project";
 
 export default class Storage {
+
+    static initialize() {
+        Events.eventEmitter.on("newProject", (title, key) => {
+
+            let newProject = new Project(title, key);
+            Storage.addProject(newProject);
+            
+            Events.eventEmitter.emit("newKey", key);
+            console.table(Storage.projectsStorage);
+        });
+    }
 
     // each index contains object: {title, date, priority}
     static #inboxStorage = [];
@@ -11,8 +24,6 @@ export default class Storage {
     //tasks is an array that contains object: {title, date, priority}
     static projectsStorage = [];
 
-    //⚠️code repeating
-    //continue here 👇
     static addTaskToStorage(task, storage) {
         storage.push(task);
     }
@@ -55,6 +66,10 @@ export default class Storage {
 
     static get projects() {
         return Storage.projectsStorage;
+    }
+
+    static addProject(newProject) {
+        Storage.projectsStorage.push(newProject);
     }
 
     //gets project inside Storage.projectsStorage

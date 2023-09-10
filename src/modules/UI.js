@@ -1,5 +1,6 @@
+import Events from "./Event";
 import Storage from "./Storage";
-
+import Project from "./Project";
 //menu
 
 export default class UI {
@@ -10,13 +11,21 @@ export default class UI {
         let inboxButton = document.querySelector("#inboxButton");
         let todayButton = document.querySelector("#todayButton");
         let thisWeekButton = document.querySelector("#thisWeekButton");
+        let addProjectField = document.querySelector("#addProjectField")
 
         //LOAD PAGE IF BUTTON CLICKED
 
         inboxButton.onclick = () => { UI.loadPage(Storage.inbox) };
-
         todayButton.onclick = () => { UI.loadPage(Storage.todayTasks) };
         thisWeekButton.onclick = () => { UI.loadPage(Storage.thisWeekTasks) };
+
+        // ADD PROJECT TO LIST
+        addProjectField.addEventListener("keyup", (e => {
+            if (e.key === "Enter") {
+                UI.addNewProject(addProjectField.value);
+                addProjectField.value = "";
+            }
+        }));
 
     }
 
@@ -61,6 +70,23 @@ export default class UI {
 
     }
 
+    static addNewProject(title) {
+
+        let key = Project.generateKey();
+
+        let projectButton = document.createElement("li");
+        projectButton.innerHTML = `<button class="project__button" data-key="${key}">${title}</button>`;
+
+        //if title is not an empty string, add node to UI
+        if (title.trim() !== "") UI.addNode("#projects--list", projectButton);
+
+
+        //add event listener
+        projectButton.addEventListener("click", () => UI.loadPage(Storage.getProject(key)));
+
+        Events.eventEmitter.emit("newProject", title, key);
+    }
+
     ////FETHCERS
 
     //use for adding task in UI, and in Storage
@@ -102,14 +128,14 @@ export default class UI {
     //UI.loadPage({title, tasks})
     static loadPage(storage) {
 
-        const {title, tasks} = storage;
+        const { title, tasks } = storage;
         // Set active page
         // ⛔won't work
         //😓consequences: adding task wont refresh page, etc
         UI.activePage = storage;
 
-        console.log("Active page: "+ UI.activePage);
-        console.log("Active page type: "+UI.activePage.type);
+        console.log("Active page: " + UI.activePage);
+        console.log("Active page type: " + UI.activePage.type);
         // Clear page
         UI.clearPage();
 
