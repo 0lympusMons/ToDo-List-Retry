@@ -1,6 +1,7 @@
 import Events from "./Event";
 import Storage from "./Storage";
 import Project from "./Project";
+import Task from "./Task";
 //menu
 
 export default class UI {
@@ -36,29 +37,48 @@ export default class UI {
 
     //addTask(fetchFormData())
     //addTask({title, date, priority})
-    static addTask({ title, date, priority }) { 
+    static addTask(task) {
 
+        //⚠️⚠️CLEAN THIS SHIT 
         //create task node
         let taskNode = document.createElement("div");
         taskNode.innerHTML = `
             <div class="task">
-            <div class="task--1">
-                <input type="checkbox" name="doneTask" id="doneTask">
-                <h3 class="task-title">${title}</h3>
-                <input type="date" name="date" id="date" value="${date}">
-                <h3 class="due-date"></h3>
-        
-                <select name="priority" id="priority">
-                <option ${(priority == "Unset") ? "selected" : ""} value="none" disabled>Priority</option>
-                <option ${(priority == "Important") ? "selected" : ""} value="Important">Important</option>
-                <option ${(priority == "Not Important") ? "selected" : ""} value="Not Important">Not Important</option>
-                </select>
-        
-            </div>
-        
-        
+
             </div>
         `;
+
+        let taskNodeForm = document.createElement("form");
+        taskNodeForm.setAttribute("data-key", task.key);
+        taskNodeForm.innerHTML = `
+            <input type="checkbox" name="doneTask" id="doneTask" ${(task.isDone)? "checked" : ""}>
+            <h3 class="task-title">${task.title}</h3>
+            <input type="date" name="date" id="date" value="${task.date}">
+            <h3 class="due-date"></h3>
+    
+            <select name="priority" id="priority">
+            <option ${(task.priority == "Unset") ? "selected" : ""} value="none" disabled>Priority</option>
+            <option ${(task.priority == "Important") ? "selected" : ""} value="Important">Important</option>
+            <option ${(task.priority == "Not Important") ? "selected" : ""} value="Not Important">Not Important</option>
+            </select>
+        `;
+
+        taskNodeForm.addEventListener('change', (event) => {
+            const changedElement = event.target;
+
+            if(changedElement.name == "doneTask"){
+                task.toggleIsDone();
+                changedElement.checked = task.isDone;
+            }else if(changedElement.name == "date"){
+                task.date = changedElement.value;
+            }else if(changedElement.name == "priority"){
+                task.priority = changedElement.value;
+            }
+
+            console.log(`Element with name "${changedElement.name}" has changed to "${changedElement.value}"`);
+        });
+
+        taskNode.appendChild(taskNodeForm);
 
         //add task node
         UI.addNode(".tasks--wrapper", taskNode)
@@ -80,7 +100,6 @@ export default class UI {
         //if title is not an empty string, add node to UI
         if (title.trim() !== "") UI.addNode("#projects--list", projectButton);
 
-
         //add event listener
         projectButton.addEventListener("click", () => UI.loadPage(Storage.getProject(key)));
 
@@ -96,7 +115,7 @@ export default class UI {
         let date = e.target.taskDate.value;
         let priority = e.target.taskPriority.value;
 
-        return { title, date, priority };
+        return {title, date, priority}; 
 
         //returns object, usage: let formData = fetchFormData();
     }
@@ -149,7 +168,7 @@ export default class UI {
 
         //display project tasks
 
-        console.log(tasks);
+        console.table(tasks);
         tasks.forEach(task => {
             //add task to UI
             UI.addTask(task);
@@ -192,10 +211,9 @@ export default class UI {
             //  >fetch form data
             let formData = UI.fetchFormData(e);
 
-
             //  >push new task to storage
             // storage example: "inbox"
-            reference.addTask(formData);
+            reference.addTask(new Task(formData.title, formData.date, formData.priority));
             // Storage.addTask(storage, formData);
 
             //  >refresh task list
