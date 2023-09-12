@@ -9,7 +9,7 @@ export default class Storage {
 
             let newProject = new Project(title, key);
             Storage.addProject(newProject);
-            
+
             Events.eventEmitter.emit("newKey", key);
             console.table(Storage.projectsStorage);
         });
@@ -28,11 +28,34 @@ export default class Storage {
         storage.push(task);
     }
 
+    //function key counter
+    //⚠️⚠️ FUNCTION USELESS
+    /*usage example: 
+        inboxKeyCounter = Storage.keyCounter();
+        inboxKeyCounter.newKey()
+    */
+    static keyCounter = () => {
+
+        let _keyCounter = 0;
+        let newKey = () => { return _keyCounter++ }
+        return {
+            newKey,
+        }
+    }
+
+    static inboxKeyCounter = Storage.keyCounter();
+
     static get inbox() {
+
         return {
             title: "Inbox",
             tasks: Storage.#inboxStorage,
-            addTask: (task) => Storage.addTaskToStorage(task, Storage.#inboxStorage)
+            taskKeyCounter: 0,
+            addTask: (task) => {
+                task.key = Storage.inboxKeyCounter.newKey();
+                Storage.addTaskToStorage(task, Storage.#inboxStorage)
+            },
+
         };
     }
 
