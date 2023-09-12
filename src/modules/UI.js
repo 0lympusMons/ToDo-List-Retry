@@ -75,6 +75,8 @@ export default class UI {
                 task.priority = changedElement.value;
             }
 
+            //⚠️⚠️ not working
+            UI.refreshPage();
             console.log(`Element with name "${changedElement.name}" has changed to "${changedElement.value}"`);
         });
 
@@ -171,7 +173,8 @@ export default class UI {
         console.table(tasks);
         tasks.forEach(task => {
             //add task to UI
-            UI.addTask(task);
+            if(task.isDone != true) UI.addTask(task);
+
         });
 
 
