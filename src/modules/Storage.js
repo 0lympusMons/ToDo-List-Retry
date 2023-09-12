@@ -61,10 +61,24 @@ export default class Storage {
 
     static get todayTasks() {
         // Filter inbox tasks based on whether they are for today
+        //⚠️⚠️ Clean code
         Storage.#todayStorage = Storage.#inboxStorage.filter((task) => {
             const date = Dates.convertDate(task.date);
             return Dates.isToday(new Date(date.year, date.month, date.day));
         });
+
+        Storage.projectsStorage.forEach(project => {
+            let tasksToday = project.tasks.filter((task)=>{
+                const date = Dates.convertDate(task.date);
+                return Dates.isToday(new Date(date.year, date.month, date.day));
+            });
+
+            tasksToday.forEach(task => {
+                Storage.#todayStorage.push(task);
+            });
+        });
+
+        // ⚠️⚠️ Clean code ends here
 
         return {
             title: "Today",
@@ -78,6 +92,17 @@ export default class Storage {
         Storage.#thisWeekStorage = Storage.#inboxStorage.filter((task) => {
             const date = Dates.convertDate(task.date);
             return Dates.isThisWeek(new Date(date.year, date.month, date.day));
+        });
+
+        Storage.projectsStorage.forEach(project => {
+            let tasksThisWeek = project.tasks.filter((task)=>{
+                const date = Dates.convertDate(task.date);
+                return Dates.isThisWeek(new Date(date.year, date.month, date.day));
+            });
+
+            tasksThisWeek.forEach(task => {
+                Storage.#thisWeekStorage.push(task);
+            });
         });
 
         return {
