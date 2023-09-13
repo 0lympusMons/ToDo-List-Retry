@@ -51,7 +51,7 @@ export default class UI {
         let taskNodeForm = document.createElement("form");
         taskNodeForm.setAttribute("data-key", task.key);
         taskNodeForm.innerHTML = `
-            <input type="checkbox" name="doneTask" id="doneTask" ${(task.isDone)? "checked" : ""}>
+            <input type="checkbox" name="doneTask" id="doneTask" ${(task.isDone) ? "checked" : ""}>
             <h3 class="task-title">${task.title}</h3>
             <input type="date" name="date" id="date" value="${task.date}">
             <h3 class="due-date"></h3>
@@ -66,12 +66,12 @@ export default class UI {
         taskNodeForm.addEventListener('change', (event) => {
             const changedElement = event.target;
 
-            if(changedElement.name == "doneTask"){
+            if (changedElement.name == "doneTask") {
                 task.toggleIsDone();
                 changedElement.checked = task.isDone;
-            }else if(changedElement.name == "date"){
+            } else if (changedElement.name == "date") {
                 task.date = changedElement.value;
-            }else if(changedElement.name == "priority"){
+            } else if (changedElement.name == "priority") {
                 task.priority = changedElement.value;
             }
 
@@ -96,16 +96,41 @@ export default class UI {
 
         let key = Project.generateKey();
 
+        //creating a delete button for projects
+
         let projectButton = document.createElement("li");
-        projectButton.innerHTML = `<button class="project__button" data-key="${key}">${title}</button>`;
+        projectButton.innerHTML = `
+                                <button class="project__button" data-key="${key}">
+                                    <div class="left-panel">${title}</div>
+                                    <div class="right-panel" id="delete-project-button">X</div>
+                                </button>`;
+
 
         //if title is not an empty string, add node to UI
         if (title.trim() !== "") UI.addNode("#projects--list", projectButton);
 
         //add event listener
-        projectButton.addEventListener("click", () => UI.loadPage(Storage.getProject(key)));
+        projectButton.addEventListener("click", (event) => {
+
+            console.log(event.target.id == "delete-project-button");
+
+            if (event.target.id == "delete-project-button") {
+                UI.deleteProject(event);
+            } else {
+                UI.loadPage(Storage.getProject(key))
+            }
+        });
 
         Events.eventEmitter.emit("newProject", title, key);
+    }
+
+    ////DELETERS
+
+    static deleteProject(event) {
+        let projectButton = event.target.parentNode.parentNode;
+
+        projectButton.remove();
+
     }
 
     ////FETHCERS
@@ -117,7 +142,7 @@ export default class UI {
         let date = e.target.taskDate.value;
         let priority = e.target.taskPriority.value;
 
-        return {title, date, priority}; 
+        return { title, date, priority };
 
         //returns object, usage: let formData = fetchFormData();
     }

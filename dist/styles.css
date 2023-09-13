@@ -66,6 +66,16 @@ header .text {
   padding: 7px;
   color: var(--light);
 }
+.global_wrapper #projects--list .project__button {
+  display: flex;
+  justify-content: space-between;
+}
+.global_wrapper #projects--list .project__button .right-panel {
+  display: none;
+}
+.global_wrapper #projects--list .project__button:hover .right-panel {
+  display: block;
+}
 .global_wrapper .temporary__content {
   flex-grow: 7;
 }
