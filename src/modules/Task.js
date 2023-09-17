@@ -41,6 +41,7 @@ export default class Task {
     toggleIsDone() {
         if (this._isDone == true) {
             this._isDone = false
+
         } else {
             this._isDone = true;
         }
