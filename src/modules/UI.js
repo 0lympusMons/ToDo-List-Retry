@@ -243,20 +243,28 @@ export default class UI {
     //example: createFormNode(Storage.inboxStorage)
     static createFormNode(reference) {
         let form = document.createElement("form");
-        form.setAttribute("id", "form");
+        form.setAttribute("id", "addTaskForm");
         form.setAttribute("action", "");
         form.innerHTML = `
 
-            <input required type="text" name="taskTitle" id="task-title">
-            <input type="date" name="date" id="taskDate">
-            <select name="priority" id="taskPriority">
-                <option value="Unset" disabled selected>Priority</option>
-                <option value="Important">Important</option>
-                <option value="Not Important">Not Important</option>
-            </select>
+            <div class="row-container">
+                <div class="left-panel">
+                <input required type="text" name="taskTitle" id="task-title">
+                </div>
 
-            <button type="submit" id="addTask">Add a task</button>
+                <div class="right-panel">
+                    <input type="date" name="date" id="taskDate">
+                    <select name="priority" id="taskPriority">
+                        <option value="Unset" disabled selected>Priority</option>
+                        <option value="Important">Important</option>
+                        <option value="Not Important">Not Important</option>
+                    </select>
+                </div>
+            </div>
 
+            <div class="row-container submit">
+                <button type="submit" id="addTask">Add a task</button>
+            </div>
         `;
 
         //form submit event listener

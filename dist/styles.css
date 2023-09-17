@@ -43,14 +43,28 @@ button {
 }
 button.active {
   background-color: var(--secondary-dark);
+  color: var(--primary-light);
+}
+button.active > * {
+  color: var(--primary-light);
 }
 button:hover {
   background: var(--secondary-dark);
+  color: var(--primary-light);
+}
+button:hover > * {
+  color: var(--primary-light);
+}
+
+input {
+  border: none;
+  padding: 5px 16px;
 }
 
 .global_wrapper {
   display: flex;
-  height: 90vh;
+  height: 85vh;
+  overflow-y: auto;
 }
 .global_wrapper .menu {
   flex-grow: 1;
@@ -58,6 +72,7 @@ button:hover {
   padding: 25px 22px;
   min-width: 330px;
   flex-shrink: 0;
+  overflow-y: auto;
   font-weight: bold;
 }
 .global_wrapper .menu ul {
@@ -86,6 +101,7 @@ button:hover {
 .global_wrapper #projects--list .project__button {
   display: flex;
   justify-content: space-between;
+  color: var(--primary-light);
 }
 .global_wrapper #projects--list .project__button .right-panel {
   display: none;
@@ -151,6 +167,56 @@ input#addProjectField {
   display: flex;
   flex-grow: 1;
   justify-content: flex-end;
+  gap: 10px;
+}
+.tasks--wrapper .task form.task-form .right-panel select#priority {
+  border: none;
+  background: var(--primary-light);
+  padding: 5px 16px;
+}
+.tasks--wrapper .task form.task-form .right-panel input#date {
+  border: none;
+  background: var(--primary-light);
+  padding: 5px 16px;
+}
+
+form#addTaskForm {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+  margin-top: 50px;
+  padding: 10px;
+}
+form#addTaskForm .row-container {
+  display: flex;
+  justify-content: space-between;
+}
+form#addTaskForm .row-container:nth-child(1) {
+  background: var(--secondary-light);
+  padding: 12px;
+}
+form#addTaskForm .row-container .left-panel input#task-title {
+  border: none;
+  padding: 5px 16px;
+}
+form#addTaskForm .row-container .right-panel > * {
+  border: none;
+  background: var(--primary-light);
+  padding: 5px 16px;
+}
+form#addTaskForm .row-container.submit {
+  margin-left: auto;
+  margin-top: 8px;
+}
+form#addTaskForm .row-container.submit button#addTask {
+  padding: 5px 16px;
+}
+
+footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 5vh;
 }
 
 /*# sourceMappingURL=styles.css.map */
