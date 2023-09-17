@@ -9,16 +9,27 @@ export default class UI {
     ////ADDING EVENT LISTENERS TO PROJECTS
 
     static initProjectButtons() {
+
+        //⚠️⚠️ initialize all buttons including project buttons
         let inboxButton = document.querySelector("#inboxButton");
         let todayButton = document.querySelector("#todayButton");
         let thisWeekButton = document.querySelector("#thisWeekButton");
-        let addProjectField = document.querySelector("#addProjectField")
+        let addProjectField = document.querySelector("#addProjectField");
 
         //LOAD PAGE IF BUTTON CLICKED
-
-        inboxButton.onclick = () => { UI.loadPage(Storage.inbox) };
-        todayButton.onclick = () => { UI.loadPage(Storage.todayTasks) };
-        thisWeekButton.onclick = () => { UI.loadPage(Storage.thisWeekTasks) };
+        //add active class to button when clicked, delete buttons that have this class
+        inboxButton.onclick = () => {
+            UI.setButtonActive(inboxButton);
+            UI.loadPage(Storage.inbox);
+        };
+        todayButton.onclick = () => {
+            UI.setButtonActive(todayButton);
+            UI.loadPage(Storage.todayTasks)
+        };
+        thisWeekButton.onclick = () => {
+            UI.setButtonActive(thisWeekButton);
+            UI.loadPage(Storage.thisWeekTasks)
+        };
 
         // ADD PROJECT TO LIST
         addProjectField.addEventListener("keyup", (e => {
@@ -28,6 +39,20 @@ export default class UI {
             }
         }));
 
+    }
+
+    //Misc Functions
+    //for button
+
+    //adds class="active" to button 
+    static setButtonActive(button) {
+        let allButtons = document.querySelectorAll("button");
+
+        allButtons.forEach(button => {
+            button.classList.remove("active");
+        });
+
+        button.classList.add("active");
     }
 
     ////ADDERS
@@ -42,39 +67,45 @@ export default class UI {
         //⚠️⚠️CLEAN THIS SHIT 
         //create task node
         let taskNode = document.createElement("div");
-        taskNode.innerHTML = `
-            <div class="task">
+        taskNode.classList.add("task");
 
-            </div>
-        `;
 
         let taskNodeForm = document.createElement("form");
+        taskNodeForm.classList.add("task-form");
         taskNodeForm.setAttribute("data-key", task.key);
         taskNodeForm.innerHTML = `
-            <input type="checkbox" name="doneTask" id="doneTask" ${(task.isDone)? "checked" : ""}>
-            <h3 class="task-title">${task.title}</h3>
-            <input type="date" name="date" id="date" value="${task.date}">
-            <h3 class="due-date"></h3>
+
+            <div class="left-panel">
+                <input type="checkbox" name="doneTask" id="doneTask" ${(task.isDone) ? "checked" : ""}>
+                <h3 class="task-title">${task.title}</h3>
+            </div>
+
+            <div class="right-panel">
+                <input type="date" name="date" id="date" value="${task.date}">
+                
+                <select name="priority" id="priority">
+                <option ${(task.priority == "Unset") ? "selected" : ""} value="none" disabled>Priority</option>
+                <option ${(task.priority == "Important") ? "selected" : ""} value="Important">Important</option>
+                <option ${(task.priority == "Not Important") ? "selected" : ""} value="Not Important">Not Important</option>
+                </select>
+            </div>
     
-            <select name="priority" id="priority">
-            <option ${(task.priority == "Unset") ? "selected" : ""} value="none" disabled>Priority</option>
-            <option ${(task.priority == "Important") ? "selected" : ""} value="Important">Important</option>
-            <option ${(task.priority == "Not Important") ? "selected" : ""} value="Not Important">Not Important</option>
-            </select>
+
         `;
 
         taskNodeForm.addEventListener('change', (event) => {
             const changedElement = event.target;
 
-            if(changedElement.name == "doneTask"){
+            if (changedElement.name == "doneTask") {
                 task.toggleIsDone();
                 changedElement.checked = task.isDone;
-            }else if(changedElement.name == "date"){
+            } else if (changedElement.name == "date") {
                 task.date = changedElement.value;
-            }else if(changedElement.name == "priority"){
+            } else if (changedElement.name == "priority") {
                 task.priority = changedElement.value;
             }
 
+            UI.refreshPage();
             console.log(`Element with name "${changedElement.name}" has changed to "${changedElement.value}"`);
         });
 
@@ -94,16 +125,42 @@ export default class UI {
 
         let key = Project.generateKey();
 
+        //creating a delete button for projects
+
         let projectButton = document.createElement("li");
-        projectButton.innerHTML = `<button class="project__button" data-key="${key}">${title}</button>`;
+        projectButton.innerHTML = `
+                                <button class="project__button" data-key="${key}">
+                                    <div class="left-panel">${title}</div>
+                                    <div class="right-panel" id="delete-project-button">X</div>
+                                </button>`;
+
 
         //if title is not an empty string, add node to UI
         if (title.trim() !== "") UI.addNode("#projects--list", projectButton);
 
         //add event listener
-        projectButton.addEventListener("click", () => UI.loadPage(Storage.getProject(key)));
+        projectButton.addEventListener("click", (event) => {
+
+            //adds class="active" to list man gud, dili sa button mismo
+            UI.setButtonActive(projectButton.childNodes[1]);
+
+            if (event.target.id == "delete-project-button") {
+                UI.deleteProject(event);
+            } else {
+                UI.loadPage(Storage.getProject(key))
+            }
+        });
 
         Events.eventEmitter.emit("newProject", title, key);
+    }
+
+    ////DELETERS
+
+    static deleteProject(event) {
+        let projectButton = event.target.parentNode.parentNode;
+
+        projectButton.remove();
+
     }
 
     ////FETHCERS
@@ -149,8 +206,6 @@ export default class UI {
 
         const { title, tasks } = storage;
         // Set active page
-        // ⛔won't work
-        //😓consequences: adding task wont refresh page, etc
         UI.activePage = storage;
 
         console.log("Active page: " + UI.activePage);
@@ -171,7 +226,8 @@ export default class UI {
         console.table(tasks);
         tasks.forEach(task => {
             //add task to UI
-            UI.addTask(task);
+            if (task.isDone != true) UI.addTask(task);
+
         });
 
 
@@ -187,20 +243,28 @@ export default class UI {
     //example: createFormNode(Storage.inboxStorage)
     static createFormNode(reference) {
         let form = document.createElement("form");
-        form.setAttribute("id", "form");
+        form.setAttribute("id", "addTaskForm");
         form.setAttribute("action", "");
         form.innerHTML = `
 
-            <input required type="text" name="taskTitle" id="task-title">
-            <input type="date" name="date" id="taskDate">
-            <select name="priority" id="taskPriority">
-                <option value="Unset" disabled selected>Priority</option>
-                <option value="Important">Important</option>
-                <option value="Not Important">Not Important</option>
-            </select>
+            <div class="row-container">
+                <div class="left-panel">
+                <input required type="text" name="taskTitle" id="task-title">
+                </div>
 
-            <button type="submit" id="addTask">Add a task</button>
+                <div class="right-panel">
+                    <input type="date" name="date" id="taskDate">
+                    <select name="priority" id="taskPriority">
+                        <option value="Unset" disabled selected>Priority</option>
+                        <option value="Important">Important</option>
+                        <option value="Not Important">Not Important</option>
+                    </select>
+                </div>
+            </div>
 
+            <div class="row-container submit">
+                <button type="submit" id="addTask">Add a task</button>
+            </div>
         `;
 
         //form submit event listener
