@@ -38,7 +38,6 @@ export default class UI {
                 addProjectField.value = "";
             }
         }));
-
     }
 
     //Misc Functions
@@ -69,7 +68,6 @@ export default class UI {
         let taskNode = document.createElement("div");
         taskNode.classList.add("task");
 
-
         let taskNodeForm = document.createElement("form");
         taskNodeForm.classList.add("task-form");
         taskNodeForm.setAttribute("data-key", task.key);
@@ -93,7 +91,7 @@ export default class UI {
 
         `;
 
-        taskNodeForm.addEventListener('change', (event) => {
+        taskNodeForm.onchange = (event) => {
             const changedElement = event.target;
 
             if (changedElement.name == "doneTask") {
@@ -107,7 +105,7 @@ export default class UI {
 
             UI.refreshPage();
             console.log(`Element with name "${changedElement.name}" has changed to "${changedElement.value}"`);
-        });
+        };
 
         taskNode.appendChild(taskNodeForm);
 
@@ -123,6 +121,8 @@ export default class UI {
 
     static addNewProject(title) {
 
+        //⚠️i used key to find it in storage
+        // ⚠️not used. used title to search for project instead
         let key = Project.generateKey();
 
         //creating a delete button for projects
@@ -130,28 +130,30 @@ export default class UI {
         let projectButton = document.createElement("li");
         projectButton.innerHTML = `
                                 <button class="project__button" data-key="${key}">
-                                    <div class="left-panel">${title}</div>
-                                    <div class="right-panel" id="delete-project-button">X</div>
+                                
+                                    <div class="left-panel"><i class="fa-solid fa-clipboard-list"></i>${title}</div>
+                                    <i class="right-panel fa-solid fa-xmark delete-button"></i>
                                 </button>`;
 
 
         //if title is not an empty string, add node to UI
         if (title.trim() !== "") UI.addNode("#projects--list", projectButton);
 
+        Events.eventEmitter.emit("newProject", title, key);
+
         //add event listener
         projectButton.addEventListener("click", (event) => {
 
-            //adds class="active" to list man gud, dili sa button mismo
             UI.setButtonActive(projectButton.childNodes[1]);
 
-            if (event.target.id == "delete-project-button") {
+            if (event.target.classList.contains("delete-button")) {
                 UI.deleteProject(event);
+                localStorage.removeItem(title);
             } else {
-                UI.loadPage(Storage.getProject(key))
+                UI.loadPage(Storage.getProject(title))
             }
         });
 
-        Events.eventEmitter.emit("newProject", title, key);
     }
 
     ////DELETERS
@@ -190,6 +192,16 @@ export default class UI {
     static activePage;
 
     static refreshPage() {
+
+        //update local storage
+        //⚠️⚠️⚠️ not a single responsibility function
+        if (UI.activePage.title == "Inbox") {
+            localStorage.setItem("inbox", JSON.stringify(UI.activePage.tasks))
+        } else if (UI.activePage.type == "Project") {
+            //⚠️⚠️⚠️ localStorage.setItem("projects", JSON.stringify(UI.activePage));
+            localStorage.setItem(UI.activePage.title, JSON.stringify(UI.activePage));
+        };
+
         UI.loadPage(UI.activePage);
     }
 
@@ -197,6 +209,14 @@ export default class UI {
     //WIP
     static loadHomePage() {
         UI.loadPage(Storage.inbox);
+        UI.initProjectButtons();
+        UI.loadProjects();
+    }
+
+    static loadProjects() {
+        Storage.projectsStorage.forEach((project) => {
+            UI.addNewProject(project.title);
+        })
     }
 
     // loadPage(storageReference)
@@ -208,8 +228,9 @@ export default class UI {
         // Set active page
         UI.activePage = storage;
 
-        console.log("Active page: " + UI.activePage);
-        console.log("Active page type: " + UI.activePage.type);
+        // console.log("Active page: " + UI.activePage);
+        // console.log("Active page type: " + UI.activePage.type);
+
         // Clear page
         UI.clearPage();
 
@@ -223,16 +244,20 @@ export default class UI {
 
         //display project tasks
 
-        console.table(tasks);
-        tasks.forEach(task => {
-            //add task to UI
-            if (task.isDone != true) UI.addTask(task);
+        // console.table(tasks);
 
-        });
+        if (tasks !== undefined) {
+            tasks.forEach(task => {
+                //add task to UI
+                if (task._isDone != true) UI.addTask(task);
 
+            });
+        }
 
         // Create form node if inbox
         if (UI.activePage.title == Storage.inbox.title || UI.activePage.type == "Project") UI.addNode(".temporary__content--content", UI.createFormNode(storage));
+
+
     }
 
 
@@ -269,7 +294,8 @@ export default class UI {
 
         //form submit event listener
         //on submit: fetch form data > append new task to UI > push new task to storage
-        form.addEventListener("submit", (e) => {
+
+        form.onsubmit = (e) => {
             e.preventDefault();
 
             //  >fetch form data
@@ -283,7 +309,7 @@ export default class UI {
             //  >refresh task list
 
             UI.refreshPage();
-        });
+        }
 
         return form;
     }

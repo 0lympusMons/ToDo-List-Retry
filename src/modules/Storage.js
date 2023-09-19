@@ -1,6 +1,7 @@
 import Dates from "./Dates";
 import Events from "./Event";
 import Project from "./Project";
+import Task from "./Task";
 
 export default class Storage {
 
@@ -13,6 +14,57 @@ export default class Storage {
             Events.eventEmitter.emit("newKey", key);
             console.table(Storage.projectsStorage);
         });
+
+        //for local storage
+        function populateStorage(item) {
+
+            let tasksSerialized;
+
+            if (localStorage.getItem(item)) {
+                tasksSerialized = JSON.parse(localStorage.getItem(item));
+                tasksSerialized = tasksSerialized.map(parseStringifiedTask);
+            }
+
+            return tasksSerialized;
+        }
+
+        //⚠️⚠️does not pass ._isDone
+        function parseStringifiedTask(task) { return new Task(task._title, task._date, task._priority, task._isDone) };
+
+        //initialize localStorage if empty
+        if (!localStorage.getItem("inbox")) {
+            localStorage.setItem("inbox", JSON.stringify(Storage.#inboxStorage))
+        } else {
+            Storage.#inboxStorage = populateStorage("inbox");
+        };
+
+        //if greater than 1, projects are saved in localStorage
+        if (localStorage.length > 1) {
+            for (let _key = 0; _key < localStorage.length; _key++) {
+                //loop thru localStorage
+                //get item
+                //create new Project from item
+                //if tasks inside new Project is undefined, skip
+                //push new Project to storage
+                //iterate to next item, then repeat.
+
+                const projectName = localStorage.key(_key);
+                if(projectName !== "inbox"){
+                    const tasksSerialized = JSON.parse(localStorage.getItem(projectName));
+                    const project = new Project(projectName, Project.generateKey());
+    
+                    project.tasks = (tasksSerialized.tasks)? tasksSerialized.tasks.map(parseStringifiedTask) : [];
+                    
+                    Storage.projectsStorage.push(project);
+                }
+                
+                // console.table("Storage projects: "+project.tasks);
+            }
+        }
+
+
+
+
     }
 
     // each index contains object: {title, date, priority}
@@ -26,6 +78,8 @@ export default class Storage {
 
     static addTaskToStorage(task, storage) {
         storage.push(task);
+
+        // localStorage.setItem(name, JSON.stringify(storage));
     }
 
     //function key counter
@@ -53,7 +107,7 @@ export default class Storage {
             taskKeyCounter: 0,
             addTask: (task) => {
                 task.key = Storage.inboxKeyCounter.newKey();
-                Storage.addTaskToStorage(task, Storage.#inboxStorage)
+                Storage.addTaskToStorage(task, Storage.#inboxStorage, "inbox")
             },
 
         };
@@ -68,7 +122,7 @@ export default class Storage {
         });
 
         Storage.projectsStorage.forEach(project => {
-            let tasksToday = project.tasks.filter((task)=>{
+            let tasksToday = project.tasks.filter((task) => {
                 const date = Dates.convertDate(task.date);
                 return Dates.isToday(new Date(date.year, date.month, date.day));
             });
@@ -95,7 +149,7 @@ export default class Storage {
         });
 
         Storage.projectsStorage.forEach(project => {
-            let tasksThisWeek = project.tasks.filter((task)=>{
+            let tasksThisWeek = project.tasks.filter((task) => {
                 const date = Dates.convertDate(task.date);
                 return Dates.isThisWeek(new Date(date.year, date.month, date.day));
             });
@@ -118,13 +172,15 @@ export default class Storage {
 
     static addProject(newProject) {
         Storage.projectsStorage.push(newProject);
+
+        if (!localStorage.getItem(newProject.title)) localStorage.setItem(newProject.title, JSON.stringify(newProject.tasks));
     }
 
     //gets project inside Storage.projectsStorage
     //Parameter: key
     //example: getProject(1), gets project with key 1
-    static getProject(key) {
-        return Storage.projectsStorage.find((project => project.key === key));
+    static getProject(title) {
+        return Storage.projectsStorage.find((project => project.title === title));
     }
 
 

@@ -44,9 +44,16 @@ export default class Project{
         return this.tasks;
     }
 
+    set tasks(_tasks){
+        _tasks.array.forEach(task => {
+            this.addTask(task);
+        });
+    }
+
     //add newly constructed project to storage
     addToStorage() {
         Storage.projectsStorage.push(this);
+        localStorage.setItem(this.title, JSON.stringify(this));
     }
 
     //delete project from storage
@@ -55,6 +62,9 @@ export default class Project{
         // delete from storage
         let index = Storage.projectsStorage.findIndex(project => project.key === this.key);
         Storage.projectsStorage.splice(index, 1);
+
+        //delete in local storage
+        localStorage.removeItem(this.title);
         
         // delete in UI
     }
