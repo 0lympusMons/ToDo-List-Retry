@@ -28,7 +28,8 @@ export default class Storage {
             return tasksSerialized;
         }
 
-        function parseStringifiedTask(task) { return new Task(task._title, task._date, task._priority) };
+        //⚠️⚠️does not pass ._isDone
+        function parseStringifiedTask(task) { return new Task(task._title, task._date, task._priority, task._isDone) };
 
         //initialize localStorage if empty
         if (!localStorage.getItem("inbox")) {
@@ -53,7 +54,7 @@ export default class Storage {
                     const project = new Project(projectName, Project.generateKey());
     
                     project.tasks = (tasksSerialized.tasks)? tasksSerialized.tasks.map(parseStringifiedTask) : [];
-    
+                    
                     Storage.projectsStorage.push(project);
                 }
                 
