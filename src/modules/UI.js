@@ -130,28 +130,30 @@ export default class UI {
         let projectButton = document.createElement("li");
         projectButton.innerHTML = `
                                 <button class="project__button" data-key="${key}">
-                                    <div class="left-panel">${title}</div>
-                                    <div class="right-panel" id="delete-project-button">X</div>
+                                
+                                    <div class="left-panel"><i class="fa-solid fa-clipboard-list"></i>${title}</div>
+                                    <i class="right-panel fa-solid fa-xmark delete-button"></i>
                                 </button>`;
 
 
         //if title is not an empty string, add node to UI
         if (title.trim() !== "") UI.addNode("#projects--list", projectButton);
 
+        Events.eventEmitter.emit("newProject", title, key);
+
         //add event listener
         projectButton.addEventListener("click", (event) => {
 
-            //adds class="active" to list man gud, dili sa button mismo
             UI.setButtonActive(projectButton.childNodes[1]);
 
-            if (event.target.id == "delete-project-button") {
+            if (event.target.classList.contains("delete-button")) {
                 UI.deleteProject(event);
+                localStorage.removeItem(title);
             } else {
-                UI.loadPage(Storage.getProject(key))
+                UI.loadPage(Storage.getProject(title))
             }
         });
 
-        Events.eventEmitter.emit("newProject", title, key);
     }
 
     ////DELETERS
