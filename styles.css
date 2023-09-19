@@ -41,19 +41,15 @@ button {
   font-size: 1rem;
   font-weight: 700;
 }
-button.active {
+button.active, button:hover {
   background-color: var(--secondary-dark);
   color: var(--primary-light);
 }
-button.active > * {
+button.active > *, button.active *::before, button.active *::after, button:hover > *, button:hover *::before, button:hover *::after {
   color: var(--primary-light);
 }
-button:hover {
-  background: var(--secondary-dark);
-  color: var(--primary-light);
-}
-button:hover > * {
-  color: var(--primary-light);
+button i {
+  margin-right: 8px;
 }
 
 input {
