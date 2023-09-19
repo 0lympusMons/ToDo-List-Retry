@@ -38,12 +38,6 @@ export default class UI {
                 addProjectField.value = "";
             }
         }));
-
-
-        //menu
-        Storage.projectsStorage.forEach((project) => {
-            UI.addNewProject(project.title);
-        })
     }
 
     //Misc Functions
@@ -74,7 +68,6 @@ export default class UI {
         let taskNode = document.createElement("div");
         taskNode.classList.add("task");
 
-
         let taskNodeForm = document.createElement("form");
         taskNodeForm.classList.add("task-form");
         taskNodeForm.setAttribute("data-key", task.key);
@@ -98,7 +91,7 @@ export default class UI {
 
         `;
 
-        taskNodeForm.addEventListener('change', (event) => {
+        taskNodeForm.onchange = (event) => {
             const changedElement = event.target;
 
             if (changedElement.name == "doneTask") {
@@ -112,7 +105,7 @@ export default class UI {
 
             UI.refreshPage();
             console.log(`Element with name "${changedElement.name}" has changed to "${changedElement.value}"`);
-        });
+        };
 
         taskNode.appendChild(taskNodeForm);
 
@@ -129,6 +122,7 @@ export default class UI {
     static addNewProject(title) {
 
         //⚠️i used key to find it in storage
+        // ⚠️not used. used title to search for project instead
         let key = Project.generateKey();
 
         //creating a delete button for projects
@@ -215,6 +209,14 @@ export default class UI {
     //WIP
     static loadHomePage() {
         UI.loadPage(Storage.inbox);
+        UI.initProjectButtons();
+        UI.loadProjects();
+    }
+
+    static loadProjects() {
+        Storage.projectsStorage.forEach((project) => {
+            UI.addNewProject(project.title);
+        })
     }
 
     // loadPage(storageReference)
@@ -226,8 +228,9 @@ export default class UI {
         // Set active page
         UI.activePage = storage;
 
-        console.log("Active page: " + UI.activePage);
-        console.log("Active page type: " + UI.activePage.type);
+        // console.log("Active page: " + UI.activePage);
+        // console.log("Active page type: " + UI.activePage.type);
+
         // Clear page
         UI.clearPage();
 
@@ -241,12 +244,12 @@ export default class UI {
 
         //display project tasks
 
-        console.table(tasks);
+        // console.table(tasks);
 
         if (tasks !== undefined) {
             tasks.forEach(task => {
                 //add task to UI
-                if (task.isDone != true) UI.addTask(task);
+                if (task._isDone != true) UI.addTask(task);
 
             });
         }
@@ -291,7 +294,8 @@ export default class UI {
 
         //form submit event listener
         //on submit: fetch form data > append new task to UI > push new task to storage
-        form.addEventListener("submit", (e) => {
+
+        form.onsubmit = (e) => {
             e.preventDefault();
 
             //  >fetch form data
@@ -305,7 +309,7 @@ export default class UI {
             //  >refresh task list
 
             UI.refreshPage();
-        });
+        }
 
         return form;
     }
