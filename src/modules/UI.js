@@ -128,6 +128,7 @@ export default class UI {
 
     static addNewProject(title) {
 
+        //⚠️i used key to find it in storage
         let key = Project.generateKey();
 
         //creating a delete button for projects
@@ -179,7 +180,7 @@ export default class UI {
         let date = e.target.taskDate.value;
         let priority = e.target.taskPriority.value;
 
-        return {title, date, priority}; 
+        return { title, date, priority };
 
         //returns object, usage: let formData = fetchFormData();
     }
@@ -197,6 +198,16 @@ export default class UI {
     static activePage;
 
     static refreshPage() {
+
+        //update local storage
+        //⚠️⚠️⚠️ not a single responsibility function
+        if (UI.activePage.title == "Inbox") {
+            localStorage.setItem("inbox", JSON.stringify(UI.activePage.tasks))
+        } else if (UI.activePage.type == "Project") {
+            //⚠️⚠️⚠️ localStorage.setItem("projects", JSON.stringify(UI.activePage));
+            localStorage.setItem(UI.activePage.title, JSON.stringify(UI.activePage));
+        };
+
         UI.loadPage(UI.activePage);
     }
 
@@ -231,15 +242,19 @@ export default class UI {
         //display project tasks
 
         console.table(tasks);
-        tasks.forEach(task => {
-            //add task to UI
-            if (task.isDone != true) UI.addTask(task);
 
-        });
+        if (tasks !== undefined) {
+            tasks.forEach(task => {
+                //add task to UI
+                if (task.isDone != true) UI.addTask(task);
 
+            });
+        }
 
         // Create form node if inbox
         if (UI.activePage.title == Storage.inbox.title || UI.activePage.type == "Project") UI.addNode(".temporary__content--content", UI.createFormNode(storage));
+
+
     }
 
 
