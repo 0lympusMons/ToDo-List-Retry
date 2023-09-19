@@ -6,20 +6,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="styles.css">
     <script defer src="./main.js"></script>
+    <script src="https://kit.fontawesome.com/a8f9f6d255.js" crossorigin="anonymous"></script>
     <title>To Do</title>
 </head>
 
 <body>
     <header>
+        <i class="fa-solid fa-check-to-slot"></i>
         <h1 class="text">Todo</h1>
     </header>
 
     <div class="global_wrapper">
         <div class="menu">
             <ul>
-                <li><button id="inboxButton" class="menu__button">Inbox</button></li>
-                <li><button id="todayButton" class="menu__button">Today</button></li>
-                <li><button id="thisWeekButton" class="menu__button">This Week</button></li>
+                <li>
+                    <i class="fa-regular fa-circle"></i>
+                    <button id="inboxButton" class="menu__button"><i class="fa-solid fa-inbox"></i> Inbox</button></li>
+                <li><button id="todayButton" class="menu__button"><i class="fa-solid fa-calendar-day"></i>Today</button></li>
+                <li><button id="thisWeekButton" class="menu__button"><i class="fa-solid fa-calendar-week"></i>This Week</button></li>
             </ul>
 
             <div class="projects">
