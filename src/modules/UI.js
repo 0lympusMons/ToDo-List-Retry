@@ -39,6 +39,11 @@ export default class UI {
             }
         }));
 
+
+        //menu
+        Storage.projectsStorage.forEach((project) => {
+            UI.addNewProject(project.title);
+        })
     }
 
     //Misc Functions
