@@ -45,7 +45,11 @@ button.active, button:hover {
   background-color: var(--secondary-dark);
   color: var(--primary-light);
 }
-button.active > *, button.active *::before, button.active *::after, button:hover > *, button:hover *::before, button:hover *::after {
+button.active > *,
+button.active *::before,
+button.active *::after, button:hover > *,
+button:hover *::before,
+button:hover *::after {
   color: var(--primary-light);
 }
 button i {
@@ -209,10 +213,15 @@ form#addTaskForm .row-container.submit button#addTask {
 }
 
 footer {
+  background: var(--secondary-light);
   display: flex;
   align-items: center;
   justify-content: center;
   height: 5vh;
+  white-space: break-spaces;
+}
+footer a {
+  text-decoration: none;
 }
 
 /*# sourceMappingURL=styles.css.map */
