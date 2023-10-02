@@ -1,3 +1,6 @@
+import Events from "./modules/Event";
 import UI from "./modules/UI";
+import Storage from "./modules/Storage";
 
-UI.initProjectButtons();
+Storage.initialize();
+UI.loadHomePage();
